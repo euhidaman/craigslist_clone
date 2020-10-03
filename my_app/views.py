@@ -45,8 +45,10 @@ def new_search(request):
             print(post_image_url)
         else:
             post_image_url = "https://sfwallpaper.com/images/image-not-available-6.jpg"
-
+        # listings data, to be sent to frontend
         final_postings.append((post_title, post_url, post_price, post_image_url))
+    # frontend representation--> post.0  , post.1  , post.2    , post.3
+    # the final_postings elements, will represented as above respectively in the frontend(new_search.html)
 
     # elements to be sent to frontend, in the form of dictionary
     stuff_for_frontend = {
