@@ -31,7 +31,11 @@ def new_search(request):
     for post in post_listings:
         post_title = post.find(class_='result-title').text
         post_url = post.find('a').get('href')
-        post_price = post.find(class_='result-price').text
+        # some, items don't have price, so if price is not found, it will print price='N/A'
+        if post.find(class_='result-price'):
+            post_price = post.find(class_='result-price').text
+        else:
+            post_price = 'N/A'
         final_postings.append((post_title, post_url, post_price))
 
     stuff_for_frontend = {
