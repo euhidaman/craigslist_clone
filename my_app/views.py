@@ -1,20 +1,30 @@
-# video ==> 9:00:00
+# video ==> 9:15:00
 import requests
+from requests.compat import quote_plus
 from django.shortcuts import render
 from bs4 import BeautifulSoup
+from . import models
 
 
-BASE_CRAIGSLIST_URL = "https://bangalore.craigslist.org/search/sss?query={}"
+BASE_CRAIGSLIST_URL = "https://bangalore.craigslist.org/search/?query={}"
 # Create your views here.
 def home(request):
     return render(request, 'base.html')
 
 
 def new_search(request):
-    search = request.POST.get('search')  # the get(), method is not POST/GET method, it's python dictionary get()
-    response = requests.get('https://bangalore.craigslist.org/search/sss?query=gaming%20pc')
+    # the get() method given below, is not POST/GET method, it's python dictionary get()
+    search = request.POST.get('search')
+    models.Search.objects.create(search=search)
+    # Append the search item entered, to the base craigslist url, in place of {}
+    # so, it basically concatenates what you searched to the base url
+    final_url = BASE_CRAIGSLIST_URL.format(quote_plus(search))
+    response = requests.get(final_url)
     data = response.text
-    print(data)
+    soup = BeautifulSoup(data, features='html.parser')
+    post_titles = soup.find_all('a', {'class': 'result-title'})
+    print(post_titles[0].text)
+    # print(data)
     stuff_for_frontend = {
         'search': search,
     }
