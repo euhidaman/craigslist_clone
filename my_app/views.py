@@ -1,4 +1,4 @@
-# video ==> 9:15:00
+# video ==> 9:20:00
 import requests
 from requests.compat import quote_plus
 from django.shortcuts import render
@@ -23,16 +23,19 @@ def new_search(request):
     data = response.text
     soup = BeautifulSoup(data, features='html.parser')
 
+    # find all the elements, with the tag <li>, having class 'result-row'
     post_listings = soup.find_all('li', {'class': 'result-row'})
-    post_title = post_listings[4].find(class_='result-title').text
-    post_url = post_listings[4].find('a').get('href')
-    post_price = post_listings[4].find(class_='result-price').text
+    final_postings = []
 
-    print(post_title)
-    print(post_url)
-    print(post_price)
+    # Looping through all the post_listings, to extract title, url, price of the posts
+    for post in post_listings:
+        post_title = post.find(class_='result-title').text
+        post_url = post.find('a').get('href')
+        post_price = post.find(class_='result-price').text
+        final_postings.append((post_title, post_url, post_price))
 
     stuff_for_frontend = {
         'search': search,
+        'final_postings': final_postings,
     }
     return render(request, 'my_app/new_search.html', stuff_for_frontend)
