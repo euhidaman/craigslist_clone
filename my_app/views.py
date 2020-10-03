@@ -22,9 +22,16 @@ def new_search(request):
     response = requests.get(final_url)
     data = response.text
     soup = BeautifulSoup(data, features='html.parser')
-    post_titles = soup.find_all('a', {'class': 'result-title'})
-    print(post_titles[0].text)
-    # print(data)
+
+    post_listings = soup.find_all('li', {'class': 'result-row'})
+    post_title = post_listings[4].find(class_='result-title').text
+    post_url = post_listings[4].find('a').get('href')
+    post_price = post_listings[4].find(class_='result-price').text
+
+    print(post_title)
+    print(post_url)
+    print(post_price)
+
     stuff_for_frontend = {
         'search': search,
     }
